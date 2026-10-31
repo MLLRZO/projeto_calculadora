@@ -1,38 +1,43 @@
 package calculadora;
 
+/**
+ * Classe responsável por testar as funcionalidades da classe Calculadora.
+ * 
+ * @author Enzo Müller Santana
+ * @version 2.0
+ */
 public class TesteCalculadora {
 
     public static void main(String[] args) {
         Calculadora calc = new Calculadora();
+        int erros = 0;
 
-        // {a, b, operação, esperado}
-       Object[][] casos = {
-    {15, 8, "+", 23},
-    {15, 8, "-", 7},
-    {6, 9, "*", 54},
-    {36, 6, "/", 6},
-    {14, 0, "/", 0},   // divisão por zero
-    {8, 2, "%", 0}     // operação inválida
-};
+        System.out.println("=== EXECUÇÃO DOS TESTES UNITÁRIOS METÓDICOS ===\n");
 
-        int falhas = 0;
-        for (Object[] caso : casos) {
-            if (!testar(calc, (int) caso[0], (int) caso[1], (String) caso[2], (int) caso[3])) {
-                falhas++;
-            }
-        }
+        erros += executarTeste(calc, 15, 8, "+", "23", "Teste de Soma");
+        erros += executarTeste(calc, 15, 8, "-", "7", "Teste de Subtração");
+        erros += executarTeste(calc, 6, 9, "*", "54", "Teste de Multiplicação");
+        erros += executarTeste(calc, 36, 6, "/", "6.0", "Teste de Divisão");
+        erros += executarTeste(calc, 14, 0, "/", "Erro: Divisão por zero!", "Teste de Divisão por Zero");
+        erros += executarTeste(calc, 8, 2, "%", "Erro: Operação inválida!", "Teste de Operação Inválida");
 
-        System.out.printf("%n%d de %d testes passaram.%n", casos.length - falhas, casos.length);
-        if (falhas > 0) {
-            System.exit(1);
+        System.out.println("----------------------------------------");
+        if (erros == 0) {
+            System.out.println("RESULTADO FINAL: TODOS OS TESTES PASSARAM COM SUCESSO!");
+        } else {
+            System.out.println("RESULTADO FINAL: " + erros + " TESTE(S) FALHARAM.");
         }
     }
 
-    static boolean testar(Calculadora calc, int a, int b, String op, int esperado) {
-        int obtido = calc.calc(a, b, op);
-        boolean ok = obtido == esperado;
-        System.out.printf("%d %s %d | esperado: %d | obtido: %d | %s%n",
-                a, op, b, esperado, obtido, ok ? "OK" : "FALHOU");
-        return ok;
+    private static int executarTeste(Calculadora calc, int a, int b, String op, String esperado, String nomeTeste) {
+        String obtido = calc.calc(a, b, op);
+        boolean passou = esperado.equals(obtido);
+
+        System.out.println("[" + (passou ? "PASSOU" : "FALHOU") + "] " + nomeTeste);
+        System.out.println("   Entradas: a = " + a + ", b = " + b + ", op = '" + op + "'");
+        System.out.println("   Esperado: " + esperado);
+        System.out.println("   Obtido:   " + obtido + "\n");
+
+        return passou ? 0 : 1;
     }
 }
